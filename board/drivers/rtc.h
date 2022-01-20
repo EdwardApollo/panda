@@ -1,4 +1,5 @@
-#define RCC_BDCR_OPTIONS (RCC_BDCR_RTCEN | RCC_BDCR_RTCSEL_0 | RCC_BDCR_LSEON)
+#define RCC_BDCR_OPTIONS_LSE (RCC_BDCR_RTCEN | RCC_BDCR_RTCSEL_0 | RCC_BDCR_LSEON)
+#define RCC_BDCR_OPTIONS_LSI (RCC_BDCR_RTCEN | RCC_BDCR_RTCSEL_1)
 
 #define YEAR_OFFSET 2000U
 
@@ -21,9 +22,21 @@ uint16_t from_bcd(uint8_t value){
 }
 
 void rtc_init(void){
+  uint32_t bdcr_opts = 0U;
+  uint32_t bdcr_mask = 0U;
+  if ((hw_type == HW_TYPE_DOS) || (hw_type == HW_TYPE_UNO)) {
+    bdcr_opts = RCC_BDCR_OPTIONS_LSE;
+    bdcr_mask = RCC_BDCR_MASK_LSE;
+  } else {
+    bdcr_opts = RCC_BDCR_OPTIONS_LSI;
+    bdcr_mask = RCC_BDCR_MASK_LSI;
+    RCC->CSR |= RCC_CSR_LSION;
+    while((RCC->CSR & RCC_CSR_LSIRDY) == 0){}
+  }
+
   if(current_board->has_rtc){
     // Initialize RTC module and clock if not done already.
-    if((RCC->BDCR & RCC_BDCR_MASK) != RCC_BDCR_OPTIONS){
+    if((RCC->BDCR & bdcr_mask) != bdcr_opts){
       puts("Initializing RTC\n");
       // Reset backup domain
       register_set_bits(&(RCC->BDCR), RCC_BDCR_BDRST);
@@ -35,7 +48,7 @@ void rtc_init(void){
       register_clear_bits(&(RCC->BDCR), RCC_BDCR_BDRST);
 
       // Set RTC options
-      register_set(&(RCC->BDCR), RCC_BDCR_OPTIONS, RCC_BDCR_MASK);
+      register_set(&(RCC->BDCR), bdcr_opts, bdcr_mask);
 
       // Enable write protection
       enable_bdomain_protection();
