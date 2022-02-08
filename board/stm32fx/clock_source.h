@@ -48,7 +48,7 @@ void TIM1_CC_IRQ_Handler(void) {
 
 void clock_source_init(uint8_t mode){
   // Setup external clock signal interrupt
-  REGISTER_INTERRUPT(EXTI0_IRQn, EXTI0_IRQ_Handler, 110U, FAULT_INTERRUPT_RATE_CLOCK_SOURCE)
+  //REGISTER_INTERRUPT(EXTI0_IRQn, EXTI0_IRQ_Handler, 110U, FAULT_INTERRUPT_RATE_CLOCK_SOURCE)
   register_set(&(SYSCFG->EXTICR[0]), SYSCFG_EXTICR1_EXTI0_PB, 0xFU);
   register_set_bits(&(EXTI->IMR), (1U << 0));
   register_set_bits(&(EXTI->RTSR), (1U << 0));
