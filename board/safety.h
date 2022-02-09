@@ -47,7 +47,7 @@ const addr_checks *current_rx_checks = &default_rx_checks;
 
 int safety_rx_hook(CANPacket_t *to_push) {
   int addr = GET_ADDR(to_push);
-  int len = GET_LEN(to_push);
+  //int len = GET_LEN(to_push);
   int bus = GET_BUS(to_push);
   int ret = current_hooks->rx(to_push);
   puts("safety_rx_hook, bus 0x");
@@ -63,7 +63,7 @@ int safety_rx_hook(CANPacket_t *to_push) {
 
 int safety_tx_hook(CANPacket_t *to_send) {
   int addr = GET_ADDR(to_send);
-  int len = GET_LEN(to_send);
+  //int len = GET_LEN(to_send);
   int bus = GET_BUS(to_send);
   int ret = (relay_malfunction ? -1 : current_hooks->tx(to_send));
   puts("safety_tx_hook, bus 0x");
