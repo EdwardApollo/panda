@@ -708,18 +708,18 @@ void tick_handler(void) {
 
           // set flag to indicate the heartbeat was lost
           if (is_car_safety_mode(current_safety_mode)) {
-            heartbeat_lost = true;
+            //heartbeat_lost = true;
           }
 
           if (current_safety_mode != SAFETY_SILENT) {
-            set_safety_mode(SAFETY_SILENT, 0U);
+            //set_safety_mode(SAFETY_SILENT, 0U);
           }
           if (power_save_status != POWER_SAVE_STATUS_ENABLED) {
-            set_power_save_state(POWER_SAVE_STATUS_ENABLED);
+            //set_power_save_state(POWER_SAVE_STATUS_ENABLED);
           }
 
           // Also disable IR when the heartbeat goes missing
-          current_board->set_ir_power(0U);
+          //current_board->set_ir_power(0U);
 
           // If enumerated but no heartbeat (phone up, boardd not running), turn the fan on to cool the device
           if(usb_enumerated()){
@@ -731,7 +731,7 @@ void tick_handler(void) {
 
         // enter CDP mode when car starts to ensure we are charging a turned off EON
         if (check_started() && (usb_power_mode != USB_POWER_CDP)) {
-          current_board->set_usb_power_mode(USB_POWER_CDP);
+          //current_board->set_usb_power_mode(USB_POWER_CDP);
         }
       }
 
