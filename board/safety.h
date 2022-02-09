@@ -46,11 +46,37 @@ const safety_hooks *current_hooks = &nooutput_hooks;
 const addr_checks *current_rx_checks = &default_rx_checks;
 
 int safety_rx_hook(CANPacket_t *to_push) {
-  return current_hooks->rx(to_push);
+  int addr = GET_ADDR(to_push);
+  int len = GET_LEN(to_push);
+  int bus = GET_BUS(to_push);
+  int ret = current_hooks->rx(to_push);
+  puts("safety_rx_hook, bus 0x");
+  puth(bus);
+  puts(", addr 0x");
+  puth(addr);
+  if(ret != 0)
+    puts(", Valid\n");
+  else
+    puts(", Not Valid\n");
+  return ret;
 }
 
 int safety_tx_hook(CANPacket_t *to_send) {
-  return (relay_malfunction ? -1 : current_hooks->tx(to_send));
+  int addr = GET_ADDR(to_send);
+  int len = GET_LEN(to_send);
+  int bus = GET_BUS(to_send);
+  int ret = (relay_malfunction ? -1 : current_hooks->tx(to_send));
+  puts("safety_tx_hook, bus 0x");
+  puth(bus);
+  puts(", addr 0x");
+  puth(addr);
+  if(ret == 0)
+    puts(", Denied\n");
+  else if(ret == -1)
+    puts(", Relay malfunction\n");
+  else
+    puts(", Allowed\n");
+  return ret;
 }
 
 int safety_tx_lin_hook(int lin_num, uint8_t *data, int len) {
