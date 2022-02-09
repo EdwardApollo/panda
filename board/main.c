@@ -699,7 +699,7 @@ void tick_handler(void) {
         if (heartbeat_counter >= (check_started() ? HEARTBEAT_IGNITION_CNT_ON : HEARTBEAT_IGNITION_CNT_OFF)) {
           puts("device hasn't sent a heartbeat for 0x");
           puth(heartbeat_counter);
-          puts(" seconds. Safety is set to SILENT mode.\n");
+          puts(" seconds. Safety is NOT set to SILENT mode because our fw is 1337.\n");
 
           if (controls_allowed_countdown > 0U) {
             siren_countdown = 5U;
