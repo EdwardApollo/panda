@@ -50,14 +50,16 @@ int safety_rx_hook(CANPacket_t *to_push) {
   //int len = GET_LEN(to_push);
   int bus = GET_BUS(to_push);
   int ret = current_hooks->rx(to_push);
-  puts("safety_rx_hook, bus 0x");
-  puth(bus);
-  puts(", addr 0x");
-  puth(addr);
-  if(ret != 0)
-    puts(", Valid\n");
-  else
-    puts(", Not Valid\n");
+  if(addr == 0x18daf130 || addr == 0x18da30f1) {
+    puts("safety_rx_hook, bus 0x");
+    puth(bus);
+    puts(", addr 0x");
+    puth(addr);
+    if(ret != 0)
+      puts(", Valid\n");
+    else
+      puts(", Not Valid\n");
+  }
   return ret;
 }
 
@@ -66,16 +68,18 @@ int safety_tx_hook(CANPacket_t *to_send) {
   //int len = GET_LEN(to_send);
   int bus = GET_BUS(to_send);
   int ret = (relay_malfunction ? -1 : current_hooks->tx(to_send));
-  puts("safety_tx_hook, bus 0x");
-  puth(bus);
-  puts(", addr 0x");
-  puth(addr);
-  if(ret == 0)
-    puts(", Denied\n");
-  else if(ret == -1)
-    puts(", Relay malfunction\n");
-  else
-    puts(", Allowed\n");
+  if(addr == 0x18daf130 || addr == 0x18da30f1) {
+    puts("safety_tx_hook, bus 0x");
+    puth(bus);
+    puts(", addr 0x");
+    puth(addr);
+    if(ret == 0)
+      puts(", Denied\n");
+    else if(ret == -1)
+      puts(", Relay malfunction\n");
+    else
+      puts(", Allowed\n");
+  }
   return ret;
 }
 
